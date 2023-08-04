@@ -18,33 +18,24 @@ use App\Http\Controllers\UsersController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-// Route::group(['middleware' => 'auth:sanctum'], function(){
-//     //All secure URL's
+Route::group(['middleware' => 'auth:sanctum'], function(){
+    //All secure URL's
 
-//     Route::get('/posts', [PostsController::class, 'index']);
+    Route::get('/posts', [PostsController::class, 'index']);
 
-//     Route::get('/posts/id/{id?}', [PostsController::class, 'show']);
+    Route::get('/posts/id/{id?}', [PostsController::class, 'show']);
 
-//     Route::post('/posts/create', [PostsController::class, 'store']);
+    Route::post('/posts/create', [PostsController::class, 'store']);
 
-//     Route::put('/posts/edit/id/{id?}', [PostsController::class, 'update']);
+    Route::put('/posts/edit/id/{id?}', [PostsController::class, 'update']);
 
-//     Route::delete('/posts/delete/id/{id?}', [PostsController::class, 'destroy']);
+    Route::delete('/posts/delete/id/{id?}', [PostsController::class, 'destroy']);
 
-//     Route::post('/logout', [UserController::class, 'logout']);
-//     Route::get('/posts/search/{slug?}', [PostsController::class, 'search']);
+    Route::post('/logout', [UsersController::class, 'logout']);
+    Route::get('/posts/search/{slug?}', [PostsController::class, 'search']);
 
-// });
+});
 Route::post('/login', [UsersController::class, 'login']);
 Route::post('/register', [UsersController::class, 'register']);
-Route::get('/posts', [PostsController::class, 'index']);
-Route::get('/posts/id/{id?}', [PostsController::class, 'show']);
-
-Route::post('/posts/create', [PostsController::class, 'store']);
-
-Route::put('/posts/edit/id/{id?}', [PostsController::class, 'update']);
-
-Route::delete('/posts/delete/id/{id?}', [PostsController::class, 'destroy']);
-Route::get('/posts/search/{slug?}', [PostsController::class, 'search']);
-
-Route::post('/logout', [UserController::class, 'logout']);
+Route::get('/users', [UsersController::class, 'index']);
+Route::delete('/users/delete/id/{id?}', [UsersController::class, 'destroy']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 class UsersController extends Controller
 {
     /**
@@ -11,7 +12,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        //
+        return User::all();
     }
 
     /**
@@ -59,22 +60,35 @@ class UsersController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = $id ? User::find($id) : null;
+        if ($user)
+        {
+            $msg = $user->delete() ? ["User deleted"] : ["Deletion failed"];
+        }
+        else
+        {
+            $msg = ["User not found"];
+        }
+        return $msg;
     }
     protected function register(Request $request)
     {
-        $fields = $request->validate(
+        $validator = Validator::make($request->all(),
             [
-                'name'=> 'required|string',
-                'email'=> 'required|unique:users|email',
-                'password'=> 'required|confirmed'
+                'name'=> 'required|string|max:200',
+                'email'=> 'required|unique:users|email|max:255',
+                'password'=> 'required|confirmed|min:8|string'
             ]
         );
+        if ($validator->fails())
+        {
+            return ($validator->errors()->all());
+        }
         $response = User::create([
-            'name' => $fields['name'],
-            'email' => $fields['email'],
-            'password' => Hash::make($fields['password']),
-        ]) ? "Registration success" : "Registration failed";
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => Hash::make($request['password']),
+        ]) ? ["Registration success"] : ["Registration failed"];
         return response($response, 201);
     }
     protected function login(Request $request)
@@ -88,18 +102,22 @@ class UsersController extends Controller
                 'user' => $user,
                 'token' => $token
             ];
+            $code = 201;
         }
         else
         {
             $response = [
                 'message' => ['Invalid credentials']
             ];
+            $code = 401;
         }
-        return response($response, 201);
+        return response($response, $code);
     }
     protected function logout(Request $request)
     {
-        auth()->user()->tokens()->delete();
+        $request->user()->token()->delete();
+        // OR
+        //$request->user()->token()->revoke();
         return response(['logged out'], 201);
     }
 }
