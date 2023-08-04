@@ -74,3 +74,17 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 <li>copy the address where the server is running and append /api/posts to view all posts in json format</li>
 </ul>
 For more api requests checkout the routes/api.php file
+
+## Creating Seeders
+<ul>
+<li>First make the seeder by:<code>php artisan make:seeder "SeederName"</code></li>
+<li>Add this sample code in the run method in the seeder created:<code>DB::table('users')->insert(
+            [
+                'email' => 'johndoe@gmail.com',
+                'name' => 'john doe',
+                'password'=> Hash::make('johndoe@123')
+            ]
+        );</code></li>
+<li>Migrate changes to the database by:<code>php artisan db:seed --class "SeederName"</code></li>
+
+</ul>
